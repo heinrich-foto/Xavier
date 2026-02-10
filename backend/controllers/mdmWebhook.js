@@ -136,7 +136,7 @@ async function handleConnect(event) {
         // wenn device nicht existiert muss es erstellt in der Datenbank noch erstellt werden.
         if (!device) {
             device = null; // wenn device nicht existiert muss es erstellt in der Datenbank noch erstellt werden.
-            if (!plistData.ProductName) {
+            if (!plistData.QueryResponses.ProductName) {
                 console.log('No ProductName found in plistData');
                 console.log(plistData);
                 console.log('query DeviceInfo Command');
@@ -144,13 +144,13 @@ async function handleConnect(event) {
                 return;
             }
 
-            if (plistData.ProductName.includes('Mac')) {
+            if (plistData.QueryResponses.ProductName.includes('Mac')) {
                 device = macOSDevice;
-            } else if (plistData.ProductName.includes('iPhone')) {
+            } else if (plistData.QueryResponses.ProductName.includes('iPhone')) {
                 device = iOSDevice;
-            } else if (plistData.ProductName.includes('iPad')) {
+            } else if (plistData.QueryResponses.ProductName.includes('iPad')) {
                 device = iPadOSDevice;
-            } else if (plistData.ProductName.includes('AppleTV')) {
+            } else if (plistData.QueryResponses.ProductName.includes('AppleTV')) {
                 device = tvOSDevice;
             } 
         }
