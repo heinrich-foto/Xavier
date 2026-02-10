@@ -131,14 +131,22 @@ async function handleConnect(event) {
         console.log('PLIST PAYLOAD:');
         console.log(plistData);
         const lastCheckedIn = Date.now();
-        
-        const device = await getDeviceType(udid);
+        let device = null;
+        device = await getDeviceType(udid);
         // wenn device nicht existiert muss es erstellt in der Datenbank noch erstellt werden.
         if (!device) {
-            await device.create({ UDID: udid });
+            device = null; // wenn device nicht existiert muss es erstellt in der Datenbank noch erstellt werden.
+            if (plistData.ProductName.includes('Mac')) {
+                device = macOSDevice;
+            } else if (plistData.ProductName.includes('iPhone')) {
+                device = iOSDevice;
+            } else if (plistData.ProductName.includes('iPad')) {
+                device = iPadOSDevice;
+            } else if (plistData.ProductName.includes('AppleTV')) {
+                device = tvOSDevice;
+            } 
         }
         
-
         if (plistData.QueryResponses) {
             const QueryResponses = plistData.QueryResponses;
             await device.updateOne(
