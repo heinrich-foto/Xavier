@@ -86,46 +86,52 @@ function InstallProfileModal({
         </Modal.Header>
         <Modal.Body>
           {!plistData && UDID ? (
-            <table className='table tableList'>
-              <tbody>
-                {configProfiles
-                  .filter((configProfile) => {
-                    let installed = false;
-                    currentProfiles.forEach((currentProfile) => {
-                      if (
-                        currentProfile.PayloadIdentifier ===
-                        configProfile.PayloadIdentifier
-                      ) {
-                        installed = true;
-                      }
-                    });
-                    return !installed;
-                  })
-                  .map((configProfile, index) => {
-                    return (
-                      <tr key={configProfile.PayloadIdentifier + index}>
-                        <td>
-                          <div className='form-check'>
-                            <input
-                              className='form-check-input'
-                              type='checkbox'
-                              value=''
-                              onChange={() =>
-                                selectConfigProfile(
-                                  configProfile.MobileConfigData
-                                )
-                              }
-                            />
-                            <label className='form-check-label'>
-                              {configProfile.PayloadDisplayName}
-                            </label>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-              </tbody>
-            </table>
+            configProfiles?.length > 0 ? (
+              <table className='table tableList'>
+                <tbody>
+                  {configProfiles
+                    .filter((configProfile) => {
+                      let installed = false;
+                      currentProfiles.forEach((currentProfile) => {
+                        if (
+                          currentProfile.PayloadIdentifier ===
+                          configProfile.PayloadIdentifier
+                        ) {
+                          installed = true;
+                        }
+                      });
+                      return !installed;
+                    })
+                    .map((configProfile, index) => {
+                      return (
+                        <tr key={configProfile.PayloadIdentifier + index}>
+                          <td>
+                            <div className='form-check'>
+                              <input
+                                className='form-check-input'
+                                type='checkbox'
+                                value=''
+                                onChange={() =>
+                                  selectConfigProfile(
+                                    configProfile.MobileConfigData
+                                  )
+                                }
+                              />
+                              <label className='form-check-label'>
+                                {configProfile.PayloadDisplayName}
+                              </label>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            ) : (
+              <p className='text-muted'>
+                Es sind keine Profile vorhanden. Bitte lade zuerst ein Profil hoch.
+              </p>
+            )
           ) : null}
 
           {!plistData ? (
