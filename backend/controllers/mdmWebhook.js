@@ -136,6 +136,14 @@ async function handleConnect(event) {
         // wenn device nicht existiert muss es erstellt in der Datenbank noch erstellt werden.
         if (!device) {
             device = null; // wenn device nicht existiert muss es erstellt in der Datenbank noch erstellt werden.
+            if (!plistData.ProductName) {
+                console.log('No ProductName found in plistData');
+                console.log(plistData);
+                console.log('query DeviceInfo Command');
+                getDeviceInfo_MDM_Command(udid);
+                return;
+            }
+
             if (plistData.ProductName.includes('Mac')) {
                 device = macOSDevice;
             } else if (plistData.ProductName.includes('iPhone')) {
