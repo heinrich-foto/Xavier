@@ -9,11 +9,13 @@ import {
 import RenameDeviceModal from "../components/modals/RenameDeviceModal.jsx";
 import InstallProfileModal from "../components/modals/InstallProfileModal.jsx";
 import EraseDeviceModal from "../components/modals/EraseDeviceModal.jsx";
+import LockDeviceModal from "../components/modals/LockDeviceModal.jsx";
 
 export default function IPadDetail() {
   const [showRenameDeviceModal, setShowRenameDeviceModal] = useState(false);
   const [showInstallProfileModal, setShowInstallProfileModal] = useState(false);
   const [showEraseDeviceModal, setShowEraseDeviceModal] = useState(false);
+  const [showLockDeviceModal, setShowLockDeviceModal] = useState(false);
 
   const actionButtons = [
     {
@@ -30,7 +32,7 @@ export default function IPadDetail() {
     },
     {
       label: "Lock Device",
-      onClick: () => {} // TODO: Implement lock device
+      onClick: () => setShowLockDeviceModal(true)
     },
     {
       label: "Rename Device",
@@ -98,6 +100,13 @@ export default function IPadDetail() {
           visible={showEraseDeviceModal}
           UDID={device.UDID}
           hideEraseDeviceModal={() => setShowEraseDeviceModal(false)}
+        />
+      )}
+      {showLockDeviceModal && (
+        <LockDeviceModal
+          visible={showLockDeviceModal}
+          UDID={device.UDID}
+          hideLockDeviceModal={() => setShowLockDeviceModal(false)}
         />
       )}
     </>

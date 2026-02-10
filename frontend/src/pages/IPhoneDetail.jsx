@@ -9,11 +9,12 @@ import {
 import InstallProfileModal from '../components/modals/InstallProfileModal.jsx';
 import EraseDeviceModal from '../components/modals/EraseDeviceModal.jsx';
 import { calculateStoragePercentage, formatMacAddress } from '../components/DeviceDetailBase';
+import LockDeviceModal from "../components/modals/LockDeviceModal.jsx";
 
 export default function IPhoneDetail() {
   const [showInstallProfileModal, setShowInstallProfileModal] = useState(false);
   const [showEraseDeviceModal, setShowEraseDeviceModal] = useState(false);
-
+  const [showLockDeviceModal, setShowLockDeviceModal] = useState(false);
   const actionButtons = [
     {
       label: "Clear Passcode",
@@ -29,7 +30,7 @@ export default function IPhoneDetail() {
     },
     {
       label: "Lock Device",
-      onClick: () => {}, // TODO: Implement lock device
+      onClick: () => setShowLockDeviceModal(true),
     },
     {
       label: "Restart Device",
@@ -88,6 +89,13 @@ export default function IPhoneDetail() {
           visible={showEraseDeviceModal}
           UDID={device.UDID}
           hideEraseDeviceModal={() => setShowEraseDeviceModal(false)}
+        />
+      )}
+      {showLockDeviceModal && (
+        <LockDeviceModal
+          visible={showLockDeviceModal}
+          UDID={device.UDID}
+          hideLockDeviceModal={() => setShowLockDeviceModal(false)}
         />
       )}
     </>
