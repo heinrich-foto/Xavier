@@ -46,8 +46,8 @@ export default function IPhoneDetail() {
       title: 'hardware',
       getData: (device) => ({
         "serial number": device.SerialNumber,
-        "product name": device.QueryResponses.ProductName,
-        "model number": device.QueryResponses.ModelNumber,
+        "product name": device.QueryResponses?.ProductName,
+        "model number": device.QueryResponses?.ModelNumber,
         "storage": calculateStoragePercentage(device),
       })
     },
@@ -64,10 +64,10 @@ export default function IPhoneDetail() {
     {
       title: 'operating system',
       getData: (device) => ({
-        "iOS version": device.QueryResponses.OSVersion,
-        "build version": device.QueryResponses.BuildVersion,
+        "iOS version": device.QueryResponses?.OSVersion,
+        "build version": device.QueryResponses?.BuildVersion,
         "MDM profile installed": device.mdmProfileInstalled,
-        "supervised": device.QueryResponses.IsSupervised,
+        "supervised": device.QueryResponses?.IsSupervised,
       })
     },
   ];
