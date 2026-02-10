@@ -66,6 +66,11 @@ echo "MDM secret API token"
 read mdmToken
 echo "MDM server URL"
 read mdmServerURL
+echo "MDM product (MicroMDM / NanoMDM / NanoHub) [default: MicroMDM]"
+read mdmProduct
+if [ -z "${mdmProduct}" ]; then
+    mdmProduct="MicroMDM"
+fi
 echo "URL of the Xavier frontend"
 read xavierFrontendURL
 
@@ -103,6 +108,7 @@ cat > /opt/xavier/backend/.env << EOL
     MDM_USER=$mdmUsername
     MDM_TOKEN=$mdmToken
     MDM_SERVER_URL=$mdmServerURL
+    MDM_PRODUCT=$mdmProduct
     XAVIER_FRONTEND_SERVER_URL=$xavierFrontendURL
     JWT_SECRET=$jwtSecret    
 EOL
