@@ -54,11 +54,11 @@ export default function IPhoneDetail() {
     {
       title: 'network',
       getData: (device) => ({
-        "Cellular Network": device.QueryResponses.ServiceSubscriptions[0].SubscriberCarrierNetwork,
-        "Phone Number": device.QueryResponses.ServiceSubscriptions[0].PhoneNumber,
-        "IMEI": device.QueryResponses.ServiceSubscriptions[0].IMEI,
-        "WiFi MAC address": formatMacAddress(device.QueryResponses.WiFiMAC),
-        "bluetooth MAC address": formatMacAddress(device.QueryResponses.BluetoothMAC),
+        "Cellular Network": device.QueryResponses?.ServiceSubscriptions?.[0]?.SubscriberCarrierNetwork,
+        "Phone Number": device.QueryResponses?.ServiceSubscriptions?.[0]?.PhoneNumber,
+        "IMEI": device.QueryResponses?.ServiceSubscriptions?.[0]?.IMEI,
+        "WiFi MAC address": formatMacAddress(device.QueryResponses?.WiFiMAC),
+        "bluetooth MAC address": formatMacAddress(device.QueryResponses?.BluetoothMAC),
       })
     },
     {
