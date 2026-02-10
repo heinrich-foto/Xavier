@@ -133,42 +133,11 @@ async function handleConnect(event) {
         const lastCheckedIn = Date.now();
         
         const device = await getDeviceType(udid);
-        // wenn device nicht existiert muss es erstellt werden!
+        // wenn device nicht existiert muss es erstellt in der Datenbank noch erstellt werden.
         if (!device) {
-            // device könnte undefined/null sein, dann hole Typ aus plistData
-            let platform = '';
-            if (plistData.QueryResponses && plistData.QueryResponses.ProductName) {
-                const productName = plistData.QueryResponses.ProductName;
-                if (productName.includes('iPad')) {
-                    platform = 'ipad';
-                } else if (productName.includes('iPhone')) {
-                    platform = 'ios';
-                } else if (productName.includes('AppleTV')) {
-                    platform = 'tvos';
-                } else {
-                    platform = 'mac';
-                }
-            }
-            // fallback falls QueryResponses/ProductName fehlen
-            if (!platform && plistData.ProfileList && plistData.ProfileList.length) {
-                // heuristisch, je nach Profile-namen könnte man auch raten
-                platform = 'mac'; // als Default
-            }
-
-            let Model;
-            switch(platform) {
-                case 'ipad': Model = require('../models/iPadOSDevice.js').default || require('../models/iPadOSDevice.js'); break;
-                case 'ios': Model = require('../models/iOSDevice.js').default || require('../models/iOSDevice.js'); break;
-                case 'tvos': Model = require('../models/tvOSDevice.js').default || require('../models/tvOSDevice.js'); break;
-                case 'mac': 
-                default:
-                    Model = require('../models/macOSDevice.js').default || require('../models/macOSDevice.js'); break;
-            }
-            // Create new device
-            await Model.create({ UDID: udid });
-            // reload device variable for downstream usage
-            device = Model;
+            await device.create({ UDID: udid });
         }
+        
 
         if (plistData.QueryResponses) {
             const QueryResponses = plistData.QueryResponses;
