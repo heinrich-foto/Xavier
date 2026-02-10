@@ -17,6 +17,7 @@ NODE_ENV="production"
 MDM_USER="yourMDM_serverUsername"
 MDM_TOKEN="yourMDM_apiToken"
 MDM_SERVER_URL="https://yourMDM-ServerURL"
+MDM_PRODUCT="MicroMDM"
 XAVIER_FRONTEND_SERVER_URL="https://www.yourFrontEndServerURL"
 JWT_SECRET="LONG_RANDOM_STRING_TO_SECURE_YOUR_JWTS"
 SSL_CERTIFICATE_FILE="path to your SSL certificate" #(optional)
@@ -25,7 +26,8 @@ SSL_KEY_FILE="path to your SSL key" #(optional)
 
 1. Set the port to whatever port is needed in your hosting environment.
 2. Setting the NODE_ENV to development would enable the GraphiQL interactive in-browser GraphQL IDE. Please do not do this in your production environment.
-3. The SSL_CERTIFICATE_FILE and SSL_KEY_FILE are only required if you are terminating TLS on the server. If you are using a load balancer (recommended), do not provide these variables.
+3. MDM_PRODUCT specifies which MDM server product you are using. Supported values: `MicroMDM` (default), `NanoMDM`, `NanoHub`. If not set, it defaults to `MicroMDM`.
+4. The SSL_CERTIFICATE_FILE and SSL_KEY_FILE are only required if you are terminating TLS on the server. If you are using a load balancer (recommended), do not provide these variables.
 
 ### Step 4 (install dependencies)
 Xavier was built and tested using **Node.js v18.17.0**. Assuming you have Node.js installed, you can install the project dependencies. In the root directory of the backend project, enter:\

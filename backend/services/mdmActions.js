@@ -5,6 +5,20 @@ import { createRawCommandPlistWithLog, createRawCommandPlistWithoutLog } from '.
 const convertedAuthToken = Buffer.from(`${process.env.MDM_USER}:${process.env.MDM_TOKEN}`).toString('base64');
 const AUTHORIZATION = `Basic ${convertedAuthToken}`;
 const SERVER_URL = process.env.MDM_SERVER_URL;
+const MDM_PRODUCT = process.env.MDM_PRODUCT || 'MicroMDM';
+
+// build the command endpoint path based on the MDM product
+function getCommandEndpoint(udid) {
+  switch (MDM_PRODUCT) {
+    case 'NanoMDM':
+      return `${SERVER_URL}/v1/enqueue/${udid}`;
+    case 'NanoHub':
+      return `${SERVER_URL}/v1/nanomdm/enqueue/${udid}`;
+    case 'MicroMDM':
+    default:
+      return `${SERVER_URL}/v1/commands/${udid}`;
+  }
+}
 
 
 // update Application data
@@ -192,7 +206,7 @@ function sendMDMCommand(udid, payload) {
   
   const config = {
     method: 'post',
-    url: `${SERVER_URL}/v1/commands/${udid}`,
+    url: getCommandEndpoint(udid),
     headers: {
       Authorization: AUTHORIZATION,
     },
