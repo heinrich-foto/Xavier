@@ -83,6 +83,34 @@ function getiOSDeviceInfo_MDM_Command(udid) {
   sendMDMCommand(udid, createRawCommandPlistWithoutLog(args));
 }
 
+// update Device Info (tvOS select responses) data
+function gettvOSDeviceInfo_MDM_Command(udid) {
+  const args = `
+    <key>RequestType</key>
+    <string>DeviceInformation</string>
+    <key>Queries</key>
+      <array>
+        <string>AvailableDeviceCapacity</string>
+        <string>BluetoothMAC</string>
+        <string>BuildVersion</string>
+        <string>DeviceCapacity</string>
+        <string>DeviceName</string>
+        <string>IsSupervised</string>
+        <string>Model</string>
+        <string>ModelName</string>
+        <string>ModelNumber</string>
+        <string>OSVersion</string>
+        <string>ProductName</string>
+        <string>SerialNumber</string>
+        <string>SoftwareUpdateDeviceID</string>
+        <string>TimeZone</string>
+        <string>UDID</string>
+        <string>WiFiMAC</string>
+      </array>
+  `.replace(/\n|\r/g, "");
+  sendMDMCommand(udid, createRawCommandPlistWithoutLog(args));
+}
+
 // update ProfileList data
 function getProfileList_MDM_Command(udid) {
   const args = '<key>RequestType</key><string>ProfileList</string>';
@@ -227,7 +255,8 @@ export {
   getInstalledApplications_MDM_Command, 
   getCertificateList_MDM_Command, 
   getDeviceInfo_MDM_Command, 
-  getiOSDeviceInfo_MDM_Command, 
+  getiOSDeviceInfo_MDM_Command,
+  gettvOSDeviceInfo_MDM_Command,
   getProfileList_MDM_Command, 
   getSecurityInfo_MDM_Command, 
   restartDevice_MDM_Command,

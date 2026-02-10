@@ -65,6 +65,27 @@ const GET_ALL_DEVICES = gql`
             }
             totalCount
         }
+        appletvs(first: $first, after: $after) {
+            edges {
+                node {
+                    SerialNumber
+                    ProductName
+                    OSVersion
+                    UDID
+                    QueryResponses {
+                        DeviceName
+                        OSVersion
+                    }
+                    updatedAt
+                }
+                cursor
+            }
+            pageInfo {
+                hasNextPage
+                endCursor
+            }
+            totalCount
+        }
     }
 `;
 

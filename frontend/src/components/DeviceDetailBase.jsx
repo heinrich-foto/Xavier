@@ -76,10 +76,10 @@ const DeviceInfoSection = ({ title, data }) => (
 );
 
 /**
- * Base component for device detail pages (Mac, iPhone, iPad)
+ * Base component for device detail pages (Mac, iPhone, iPad, Apple TV)
  * @param {Object} props
  * @param {Object} props.query - GraphQL query for fetching device data
- * @param {string} props.deviceType - Type of device ('mac', 'iphone', 'ipad')
+ * @param {string} props.deviceType - Type of device ('mac', 'iphone', 'ipad', 'appletv')
  * @param {Function} props.getDeviceData - Function to extract device data from query response
  * @param {Array} props.actionButtons - Array of action button configurations
  * @param {Function} props.renderModals - Function to render device-specific modals

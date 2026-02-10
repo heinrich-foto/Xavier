@@ -168,6 +168,34 @@ const GET_IPHONES_BY_OSVERSION = gql`
     }
 `;
 
+const GET_APPLE_TVS_BY_OSVERSION = gql`
+    query getAppleTVsByOSVersion($OSVersion: String!, $first: Int, $after: String) {
+        appletvs(filter: { OSVersion: $OSVersion }, first: $first, after: $after) {
+            edges {
+                node {
+                    SerialNumber
+                    ProductName
+                    OSVersion
+                    UDID
+                    QueryResponses {
+                        DeviceName
+                        OSVersion
+                    }
+                    Profiles {
+                        PayloadDisplayName
+                    }
+                    updatedAt
+                }
+            }
+            pageInfo {
+                hasNextPage
+                endCursor
+            }
+            totalCount
+        }
+    }
+`;
+
 
 // Application version queries
 const GET_MACS_WITH_APP_VERSION = gql`
@@ -224,6 +252,31 @@ const GET_IPADS_WITH_APP_VERSION = gql`
 const GET_IPHONES_WITH_APP_VERSION = gql`
     query getiPhonesWithAppVersion($Name: String!, $Version: String!) {
         iPhonesWithAppVersion(Name: $Name, Version: $Version) {
+            SerialNumber
+            ProductName
+            OSVersion
+            UDID
+            QueryResponses {
+                DeviceName
+            }
+            Applications {
+                Name
+                Version
+                ShortVersion
+                BundleSize
+                Installing
+            }
+            Profiles {
+                PayloadDisplayName
+            }
+            updatedAt
+        }
+    }
+`;
+
+const GET_APPLE_TVS_WITH_APP_VERSION = gql`
+    query getAppleTVsWithAppVersion($Name: String!, $Version: String!) {
+        appleTVsWithAppVersion(Name: $Name, Version: $Version) {
             SerialNumber
             ProductName
             OSVersion
@@ -352,6 +405,37 @@ const GET_IPADS_WITH_PROFILES = gql`
     }
 `;
 
+const GET_APPLE_TVS_WITH_PROFILES = gql`
+    query getAppleTVsWithProfiles($first: Int, $after: String) {
+        appletvs(first: $first, after: $after) {
+            edges {
+                node {
+                    SerialNumber
+                    ProductName
+                    OSVersion
+                    UDID
+                    QueryResponses {
+                        DeviceName
+                    }
+                    Profiles {
+                        PayloadDisplayName
+                        PayloadIdentifier
+                        PayloadUUID
+                        PayloadVersion
+                        IsManaged
+                    }
+                    updatedAt
+                }
+            }
+            pageInfo {
+                hasNextPage
+                endCursor
+            }
+            totalCount
+        }
+    }
+`;
+
 const GET_OPTIMIZED_COMPLIANCE_DATA = gql`
   query getOptimizedComplianceData(
     $consoleUser: ID!,
@@ -361,9 +445,11 @@ const GET_OPTIMIZED_COMPLIANCE_DATA = gql`
     installedMacApplications
     installediPhoneApplications
     installediPadApplications
+    installedAppleTVApplications
     installedMacProfiles
     installediPhoneProfiles
     installediPadProfiles
+    installedAppleTVProfiles
     compliancecardprefs(consoleUser: $consoleUser) {
       complianceCardPrefs {
         type
@@ -475,6 +561,39 @@ const GET_OPTIMIZED_COMPLIANCE_DATA = gql`
       }
       totalCount
     }
+    appletvs(first: $first, after: $after) {
+      edges {
+        node {
+          SerialNumber
+          UDID
+          mdmProfileInstalled
+          BuildVersion
+          OSVersion
+          ProductName
+          QueryResponses {
+            OSVersion
+            DeviceName
+          }
+          Applications {
+            Name
+            Version
+            ShortVersion
+            BundleSize
+            Installing
+          }
+          Profiles {
+            PayloadDisplayName
+          }
+          createdAt
+          updatedAt
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      totalCount
+    }
   }
 `;
 
@@ -485,12 +604,15 @@ export {
     GET_MACS_BY_OSVERSION,
     GET_IPADS_BY_OSVERSION,
     GET_IPHONES_BY_OSVERSION,
+    GET_APPLE_TVS_BY_OSVERSION,
     GET_MACS_WITH_APP_VERSION,
     GET_IPADS_WITH_APP_VERSION,
     GET_IPHONES_WITH_APP_VERSION,
+    GET_APPLE_TVS_WITH_APP_VERSION,
     GET_MAC_APP_DISTRIBUTION,
     GET_MACS_WITH_PROFILES,
     GET_IPADS_WITH_PROFILES,
     GET_IPHONES_WITH_PROFILES,
+    GET_APPLE_TVS_WITH_PROFILES,
     GET_OPTIMIZED_COMPLIANCE_DATA
 };

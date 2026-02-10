@@ -5,6 +5,7 @@
 db.macosdevices.createIndex({ "SerialNumber": 1 });
 db.iosdevices.createIndex({ "SerialNumber": 1 });
 db.ipadosdevices.createIndex({ "SerialNumber": 1 });
+db.tvosdevices.createIndex({ "SerialNumber": 1 });
 
 // Compound indexes for filtered queries
 db.macosdevices.createIndex({ 
@@ -22,16 +23,19 @@ db.macosdevices.createIndex({ "mdmProfileInstalled": 1 });
 db.macosdevices.createIndex({ "Applications.Name": 1, "Applications.Version": 1 });
 db.iosdevices.createIndex({ "Applications.Name": 1, "Applications.Version": 1 });
 db.ipadosdevices.createIndex({ "Applications.Name": 1, "Applications.Version": 1 });
+db.tvosdevices.createIndex({ "Applications.Name": 1, "Applications.Version": 1 });
 
 // Indexes for profile queries
 db.macosdevices.createIndex({ "Profiles.PayloadDisplayName": 1 });
 db.iosdevices.createIndex({ "Profiles.PayloadDisplayName": 1 });
 db.ipadosdevices.createIndex({ "Profiles.PayloadDisplayName": 1 });
+db.tvosdevices.createIndex({ "Profiles.PayloadDisplayName": 1 });
 
 // Index for pagination
 db.macosdevices.createIndex({ "_id": 1 });
 db.iosdevices.createIndex({ "_id": 1 });
 db.ipadosdevices.createIndex({ "_id": 1 });
+db.tvosdevices.createIndex({ "_id": 1 });
 
 // Index for command logs
 db.commands.createIndex({ "DeviceUDID": 1 });

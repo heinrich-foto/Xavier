@@ -97,7 +97,8 @@ export default function AllDeviceTable({
   const deviceCounts = useMemo(() => ({
     mac: deviceData?.filter(d => d.type === "mac").length || 0,
     iphone: deviceData?.filter(d => d.type === "iphone").length || 0,
-    ipad: deviceData?.filter(d => d.type === "ipad").length || 0
+    ipad: deviceData?.filter(d => d.type === "ipad").length || 0,
+    appletv: deviceData?.filter(d => d.type === "appletv").length || 0
   }), [deviceData]);
 
   const renderSortArrow = (columnKey) => {
@@ -171,8 +172,8 @@ export default function AllDeviceTable({
           </table>
 
           <div className="mt-4 d-flex gap-3 justify-content-center">
-            {['macs', 'iphones', 'ipads'].map(type => {
-              const singularType = type.replace('s', '');
+            {['macs', 'iphones', 'ipads', 'appletvs'].map(type => {
+              const singularType = type === 'appletvs' ? 'appletv' : type.replace('s', '');
               const hasMore = hasNextPage[type];
               const loading = loadingMore[type];
               const count = deviceCounts[singularType];

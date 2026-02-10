@@ -15,7 +15,8 @@ const AllDevices = () => {
   const [loadingMore, setLoadingMore] = useState({
     macs: false,
     iphones: false,
-    ipads: false
+    ipads: false,
+    appletvs: false
   });
 
   useEffect(() => {
@@ -85,6 +86,10 @@ const AllDevices = () => {
     data.ipads.edges.forEach(({ node }) => {
       combinedData.push({ ...node, type: "ipad" });
     });
+
+    data.appletvs.edges.forEach(({ node }) => {
+      combinedData.push({ ...node, type: "appletv" });
+    });
   }
 
   return (
@@ -94,12 +99,14 @@ const AllDevices = () => {
         totalCount={{
           macs: data.macs.totalCount,
           iphones: data.iphones.totalCount,
-          ipads: data.ipads.totalCount
+          ipads: data.ipads.totalCount,
+          appletvs: data.appletvs.totalCount
         }}
         hasNextPage={{
           macs: data.macs.pageInfo.hasNextPage,
           iphones: data.iphones.pageInfo.hasNextPage,
-          ipads: data.ipads.pageInfo.hasNextPage
+          ipads: data.ipads.pageInfo.hasNextPage,
+          appletvs: data.appletvs.pageInfo.hasNextPage
         }}
         onLoadMore={loadMore}
         loadingMore={loadingMore}

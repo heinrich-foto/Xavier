@@ -7,12 +7,15 @@ import {
   GET_MACS_BY_OSVERSION,
   GET_IPADS_BY_OSVERSION,
   GET_IPHONES_BY_OSVERSION,
+  GET_APPLE_TVS_BY_OSVERSION,
   GET_MACS_WITH_APP_VERSION,
   GET_IPADS_WITH_APP_VERSION,
   GET_IPHONES_WITH_APP_VERSION,
+  GET_APPLE_TVS_WITH_APP_VERSION,
   GET_MACS_WITH_PROFILES,
-    GET_IPHONES_WITH_PROFILES,
-    GET_IPADS_WITH_PROFILES
+  GET_IPHONES_WITH_PROFILES,
+  GET_IPADS_WITH_PROFILES,
+  GET_APPLE_TVS_WITH_PROFILES
 } from '../../queries/dashboardQueries';
 
 const ITEMS_PER_PAGE = 100;
@@ -24,7 +27,9 @@ const DEVICE_TYPE_MAP = {
   'ios': 'iPhone',
   'iPhone': 'iPhone',
   'ipados': 'iPad',
-  'iPad': 'iPad'
+  'iPad': 'iPad',
+  'tvos': 'AppleTV',
+  'AppleTV': 'AppleTV'
 };
 
 // Configuration for which queries use pagination
@@ -113,6 +118,16 @@ const FILTER_CONFIGS = {
             first: ITEMS_PER_PAGE,
             after: null
           })
+        },
+        'AppleTV': {
+          query: GET_APPLE_TVS_BY_OSVERSION,
+          dataKey: 'appletvs',
+          deviceType: 'appletv',
+          getVariables: (params) => ({ 
+            OSVersion: params.OSVersion,
+            first: ITEMS_PER_PAGE,
+            after: null
+          })
         }
       }[normalizedDeviceType];
     }
@@ -149,6 +164,15 @@ const FILTER_CONFIGS = {
             Name: params.Name,
             Version: params.Version
           })
+        },
+        'AppleTV': {
+          query: GET_APPLE_TVS_WITH_APP_VERSION,
+          dataKey: 'appleTVsWithAppVersion',
+          deviceType: 'appletv',
+          getVariables: (params) => ({ 
+            Name: params.Name,
+            Version: params.Version
+          })
         }
       }[normalizedDeviceType];
     }
@@ -179,6 +203,15 @@ const FILTER_CONFIGS = {
                     query: GET_IPADS_WITH_PROFILES,
                     dataKey: 'ipads',
                     deviceType: 'ipad',
+                    getVariables: () => ({
+                        first: ITEMS_PER_PAGE,
+                        after: null
+                    })
+                },
+                'AppleTV': {
+                    query: GET_APPLE_TVS_WITH_PROFILES,
+                    dataKey: 'appletvs',
+                    deviceType: 'appletv',
                     getVariables: () => ({
                         first: ITEMS_PER_PAGE,
                         after: null
