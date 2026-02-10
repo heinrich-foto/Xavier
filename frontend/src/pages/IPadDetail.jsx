@@ -58,17 +58,17 @@ export default function IPadDetail() {
     {
       title: 'network',
       getData: (device) => ({
-        "WiFi MAC address": formatMacAddress(device.QueryResponses.WiFiMAC),
-        "bluetooth MAC address": formatMacAddress(device.QueryResponses.BluetoothMAC)
+        "WiFi MAC address": formatMacAddress(device.QueryResponses?.WiFiMAC),
+        "bluetooth MAC address": formatMacAddress(device.QueryResponses?.BluetoothMAC)
       })
     },
     {
       title: 'operating system',
       getData: (device) => ({
-        "iPadOS version": device.QueryResponses.OSVersion,
-        "build version": device.QueryResponses.BuildVersion,
+        "iPadOS version": device.QueryResponses?.OSVersion,
+        "build version": device.QueryResponses?.BuildVersion,
         "MDM profile installed": device.mdmProfileInstalled,
-        "supervised": device.QueryResponses.IsSupervised
+        "supervised": device.QueryResponses?.IsSupervised
       })
     }
   ];
@@ -80,7 +80,7 @@ export default function IPadDetail() {
           visible={showRenameDeviceModal}
           UDID={device.UDID}
           platform='iPadOS'
-          oldName={device.QueryResponses.DeviceName}
+          oldName={device.QueryResponses?.DeviceName}
           hideRenameDeviceModal={() => setShowRenameDeviceModal(false)}
         />
       )}
