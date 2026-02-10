@@ -5,7 +5,7 @@ import SearchBar from "./SearchBar";
 function sortCertificates(Certificates) {
   let appArray = [...Certificates];
   return appArray.sort((a, b) => {
-    return a.CommonName.toLowerCase() > b.CommonName.toLowerCase() ? 1 : -1;
+    return (a.CommonName ?? '').toLowerCase() > (b.CommonName ?? '').toLowerCase() ? 1 : -1;
   });
 }
 
@@ -15,7 +15,7 @@ export default function CertificateListTable({ Certificates }) {
   function searchHandler(query) {
     setSearchedCerts(
       Certificates.filter((cert) =>
-        cert.CommonName.toLowerCase().includes(query.toLowerCase())
+        (cert.CommonName ?? '').toLowerCase().includes(query.toLowerCase())
       )
     );
   }
@@ -34,8 +34,8 @@ export default function CertificateListTable({ Certificates }) {
         <tbody>
           {sortCertificates(searchedCerts).map((cert, index) => {
             return (
-              <tr key={cert.CommonName + index}>
-                <td>{cert.CommonName}</td>
+              <tr key={(cert.CommonName ?? '') + index}>
+                <td>{cert.CommonName ?? ''}</td>
                 <td>{<AuditSymbolCompliance status={cert.IsIdentity} />}</td>
               </tr>
             );
