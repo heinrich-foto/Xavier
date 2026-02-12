@@ -3,7 +3,6 @@ import iOSDevice from '../models/iOSDevice.js';
 import iPadOSDevice from '../models/iPadOSDevice.js';
 import tvOSDevice from '../models/tvOSDevice.js';
 import DeviceRegistration from '../models/deviceRegistration.js';
-import profile from '../models/profile.js';
 import plist from 'plist';
 import { logResponse } from '../services/logCommand.js';
 
@@ -59,7 +58,10 @@ async function handleAuthenticate(event) {
         const registration = await DeviceRegistration.findOne({
             serialNumber: plistData.SerialNumber,
             enrollmentStatus: 'pending'
-        }).populate('profileToInstall');
+        }).populate({
+            path: 'group',
+            populate: { path: 'profiles' }
+        });
 
         const updateData = {
             'mdmProfileInstalled': true,
@@ -88,8 +90,8 @@ async function handleAuthenticate(event) {
             if (registration.plannedDeviceName) {
                 renameDevice_MDM_Command(udid, registration.plannedDeviceName, null);
             }
-            if (registration.profileToInstall) {
-                const profileDoc = await profile.findById(registration.profileToInstall);
+            const groupProfiles = registration.group?.profiles || [];
+            for (const profileDoc of groupProfiles) {
                 if (profileDoc?.MobileConfigData) {
                     installConfigProfile_MDM_Command(
                         udid,

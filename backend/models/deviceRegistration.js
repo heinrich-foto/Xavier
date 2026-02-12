@@ -20,13 +20,9 @@ const deviceRegistrationSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Location'
   },
-  profileToInstall: {
+  group: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Profile'
-  },
-  deviceType: {
-    type: String,
-    enum: ['mac', 'iphone', 'ipad', 'appletv']
+    ref: 'DeviceGroup'
   },
   enrollmentStatus: {
     type: String,

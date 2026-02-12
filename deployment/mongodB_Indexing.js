@@ -40,9 +40,14 @@ db.tvosdevices.createIndex({ "_id": 1 });
 // Index for locations
 db.locations.createIndex({ "schoolNumber": 1 }, { unique: true });
 
+// Index for device groups
+db.devicegroups.createIndex({ "name": 1 });
+db.devicegroups.createIndex({ "location": 1 });
+
 // Index for device registrations
 db.deviceregistrations.createIndex({ "serialNumber": 1 }, { unique: true });
 db.deviceregistrations.createIndex({ "location": 1 });
+db.deviceregistrations.createIndex({ "group": 1 });
 db.deviceregistrations.createIndex({ "enrollmentStatus": 1 });
 
 // Index for device location filter

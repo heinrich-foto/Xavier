@@ -72,6 +72,7 @@ import userRouter from './routes/consoleUserRoutes.js';
 import complianceCardPrefsRouter from './routes/complianceCardPrefsRoutes.js';
 import locationRouter from './routes/locationRoutes.js';
 import deviceRegistrationRouter from './routes/deviceRegistrationRoutes.js';
+import deviceGroupRouter from './routes/deviceGroupRoutes.js';
 import deviceRouter from './routes/deviceRoutes.js';
 
 // open routes
@@ -83,6 +84,7 @@ app.use('/mdm/commands', protect, mdmCommandRouter);
 app.use('/complianceCardPrefs', protect, complianceCardPrefsRouter);
 app.use('/api/locations', protect, locationRouter);
 app.use('/api/device-registrations', protect, deviceRegistrationRouter);
+app.use('/api/device-groups', protect, deviceGroupRouter);
 app.use('/api/devices', protect, deviceRouter);
 
 // graphql endpoint
