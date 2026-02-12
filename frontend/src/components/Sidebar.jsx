@@ -36,6 +36,16 @@ const NAV_ITEMS = [
     icon: "users",
     label: "Users",
   },
+  {
+    to: "/locations",
+    icon: "map-marker-alt",
+    label: "Locations",
+  },
+  {
+    to: "/device-registrations",
+    icon: "clipboard-list",
+    label: "Geräte-Registrierung",
+  },
 ];
 
 export default function Sidebar() {

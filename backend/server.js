@@ -70,6 +70,9 @@ import mdmWebhookRouter from './routes/mdmWebhookRoutes.js';
 import mdmCommandRouter from './routes/mdmCommandRoutes.js';
 import userRouter from './routes/consoleUserRoutes.js';
 import complianceCardPrefsRouter from './routes/complianceCardPrefsRoutes.js';
+import locationRouter from './routes/locationRoutes.js';
+import deviceRegistrationRouter from './routes/deviceRegistrationRoutes.js';
+import deviceRouter from './routes/deviceRoutes.js';
 
 // open routes
 app.use('/mdm/webhook', mdmWebhookRouter);
@@ -78,6 +81,9 @@ app.use('/api/users', userRouter);
 // protected routes
 app.use('/mdm/commands', protect, mdmCommandRouter);
 app.use('/complianceCardPrefs', protect, complianceCardPrefsRouter);
+app.use('/api/locations', protect, locationRouter);
+app.use('/api/device-registrations', protect, deviceRegistrationRouter);
+app.use('/api/devices', protect, deviceRouter);
 
 // graphql endpoint
 import { graphqlHTTP } from 'express-graphql';

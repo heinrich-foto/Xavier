@@ -7,7 +7,10 @@ export default function AllDeviceTable({
   totalCount, 
   hasNextPage, 
   onLoadMore,
-  loadingMore 
+  loadingMore,
+  locations = [],
+  locationFilter = "",
+  onLocationFilterChange
 }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortConfig, setSortConfig] = useState({
@@ -51,6 +54,14 @@ export default function AllDeviceTable({
           aValue = a.ProductName || '';
           bValue = b.ProductName || '';
           break;
+        case 'Location':
+          aValue = a.location?.schoolNumber || a.location?.name || '';
+          bValue = b.location?.schoolNumber || b.location?.name || '';
+          break;
+        case 'AssetTag':
+          aValue = a.assetTag || '';
+          bValue = b.assetTag || '';
+          break;
         case 'OSVersion':
           aValue = a.OSVersion;
           bValue = b.OSVersion;
@@ -85,8 +96,11 @@ export default function AllDeviceTable({
     if (lowerQuery) {
       sorted = sorted.filter((device) => {
         return (
-          device.QueryResponses.DeviceName.toLowerCase().includes(lowerQuery) ||
-          device.SerialNumber.toLowerCase().includes(lowerQuery)
+          device.QueryResponses?.DeviceName?.toLowerCase().includes(lowerQuery) ||
+          device.SerialNumber?.toLowerCase().includes(lowerQuery) ||
+          device.assetTag?.toLowerCase().includes(lowerQuery) ||
+          device.location?.schoolNumber?.toLowerCase().includes(lowerQuery) ||
+          device.location?.name?.toLowerCase().includes(lowerQuery)
         );
       });
     }
@@ -112,8 +126,23 @@ export default function AllDeviceTable({
 
   return (
     <div className="container">
-      <div className="flex justify-between items-center mb-4">
-        <div className="positionRightAndWithMargins">
+      <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
+        <div className="positionRightAndWithMargins d-flex align-items-center gap-2">
+          {locations.length > 0 && (
+            <select
+              className="form-select form-select-sm"
+              style={{ width: 'auto', minWidth: '180px' }}
+              value={locationFilter}
+              onChange={(e) => onLocationFilterChange?.(e.target.value)}
+            >
+              <option value="">Alle Locations</option>
+              {locations.map((loc) => (
+                <option key={loc._id} value={loc._id}>
+                  {loc.schoolNumber} – {loc.name}
+                </option>
+              ))}
+            </select>
+          )}
           <SearchBar
             searchHandler={(query) => setSearchQuery(query)}
             value={searchQuery}
@@ -146,6 +175,18 @@ export default function AllDeviceTable({
                   className="cursor-pointer select-none"
                 >
                   Model {renderSortArrow('Model')}
+                </th>
+                <th 
+                  onClick={() => requestSort('Location')}
+                  className="cursor-pointer select-none"
+                >
+                  Location {renderSortArrow('Location')}
+                </th>
+                <th 
+                  onClick={() => requestSort('AssetTag')}
+                  className="cursor-pointer select-none"
+                >
+                  Asset Tag {renderSortArrow('AssetTag')}
                 </th>
                 <th 
                   onClick={() => requestSort('OSVersion')}

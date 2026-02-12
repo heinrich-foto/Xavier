@@ -10,6 +10,13 @@ const tvOSDeviceSchema = new mongoose.Schema({
   mdmProfileInstalled: {
     type: Boolean
   },
+  location: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Location'
+  },
+  assetTag: {
+    type: String
+  },
   BuildVersion: {
     type: String
   },

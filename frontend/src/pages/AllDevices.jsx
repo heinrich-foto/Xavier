@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useQuery } from "@apollo/client";
 import { GET_ALL_DEVICES } from "../queries/allDevicesQuery";
+import { GET_LOCATIONS } from "../queries/locationQueries";
 import AllDeviceTable from "../components/AllDeviceTable";
 import Spinner from "../components/Spinner";
 
@@ -10,6 +11,7 @@ const AllDevices = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const ITEMS_PER_PAGE = 100;
+  const [locationFilter, setLocationFilter] = useState("");
   
   // Track loading state for each device type
   const [loadingMore, setLoadingMore] = useState({
@@ -25,12 +27,19 @@ const AllDevices = () => {
     }
   }, [user, navigate]);
 
+  const filterVariables = locationFilter
+    ? { filter: { location: locationFilter } }
+    : { filter: null };
+
   const { loading, error, data, fetchMore } = useQuery(GET_ALL_DEVICES, {
     variables: {
       first: ITEMS_PER_PAGE,
-      after: null
+      after: null,
+      ...filterVariables
     }
   });
+
+  const { data: locationsData } = useQuery(GET_LOCATIONS);
 
   const loadMore = async (type) => {
     if (loadingMore[type] || !data?.[type]?.pageInfo?.hasNextPage) return;
@@ -42,7 +51,8 @@ const AllDevices = () => {
       await fetchMore({
         variables: {
           first: ITEMS_PER_PAGE,
-          after: endCursor
+          after: endCursor,
+          ...filterVariables
         },
         updateQuery: (prevResult, { fetchMoreResult }) => {
           if (!fetchMoreResult) return prevResult;
@@ -110,6 +120,9 @@ const AllDevices = () => {
         }}
         onLoadMore={loadMore}
         loadingMore={loadingMore}
+        locations={locationsData?.locations || []}
+        locationFilter={locationFilter}
+        onLocationFilterChange={setLocationFilter}
       />
     </>
   );

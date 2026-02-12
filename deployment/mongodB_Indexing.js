@@ -37,6 +37,20 @@ db.iosdevices.createIndex({ "_id": 1 });
 db.ipadosdevices.createIndex({ "_id": 1 });
 db.tvosdevices.createIndex({ "_id": 1 });
 
+// Index for locations
+db.locations.createIndex({ "schoolNumber": 1 }, { unique: true });
+
+// Index for device registrations
+db.deviceregistrations.createIndex({ "serialNumber": 1 }, { unique: true });
+db.deviceregistrations.createIndex({ "location": 1 });
+db.deviceregistrations.createIndex({ "enrollmentStatus": 1 });
+
+// Index for device location filter
+db.macosdevices.createIndex({ "location": 1 });
+db.iosdevices.createIndex({ "location": 1 });
+db.ipadosdevices.createIndex({ "location": 1 });
+db.tvosdevices.createIndex({ "location": 1 });
+
 // Index for command logs
 db.commands.createIndex({ "DeviceUDID": 1 });
 

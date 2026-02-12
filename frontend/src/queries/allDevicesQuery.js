@@ -1,14 +1,20 @@
 import { gql } from '@apollo/client';
 
 const GET_ALL_DEVICES = gql`
-    query getAllDevices($first: Int, $after: String) {
-        macs(first: $first, after: $after) {
+    query getAllDevices($first: Int, $after: String, $filter: DeviceFilter) {
+        macs(first: $first, after: $after, filter: $filter) {
             edges {
                 node {
                     SerialNumber
                     ProductName
                     OSVersion
                     UDID
+                    assetTag
+                    location {
+                        _id
+                        name
+                        schoolNumber
+                    }
                     QueryResponses {
                         DeviceName
                         OSVersion
@@ -23,13 +29,19 @@ const GET_ALL_DEVICES = gql`
             }
             totalCount
         }
-        iphones(first: $first, after: $after) {
+        iphones(first: $first, after: $after, filter: $filter) {
             edges {
                 node {
                     SerialNumber
                     ProductName
                     OSVersion
                     UDID
+                    assetTag
+                    location {
+                        _id
+                        name
+                        schoolNumber
+                    }
                     QueryResponses {
                         DeviceName
                         OSVersion
@@ -44,13 +56,19 @@ const GET_ALL_DEVICES = gql`
             }
             totalCount
         }
-        ipads(first: $first, after: $after) {
+        ipads(first: $first, after: $after, filter: $filter) {
             edges {
                 node {
                     SerialNumber
                     ProductName
                     OSVersion
                     UDID
+                    assetTag
+                    location {
+                        _id
+                        name
+                        schoolNumber
+                    }
                     QueryResponses {
                         DeviceName
                         OSVersion
@@ -65,13 +83,19 @@ const GET_ALL_DEVICES = gql`
             }
             totalCount
         }
-        appletvs(first: $first, after: $after) {
+        appletvs(first: $first, after: $after, filter: $filter) {
             edges {
                 node {
                     SerialNumber
                     ProductName
                     OSVersion
                     UDID
+                    assetTag
+                    location {
+                        _id
+                        name
+                        schoolNumber
+                    }
                     QueryResponses {
                         DeviceName
                         OSVersion
@@ -88,6 +112,5 @@ const GET_ALL_DEVICES = gql`
         }
     }
 `;
-
 
 export { GET_ALL_DEVICES };

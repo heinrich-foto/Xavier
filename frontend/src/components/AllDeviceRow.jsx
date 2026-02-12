@@ -31,13 +31,19 @@ export default function AllDeviceRow({ device }) {
     
     const osVersion = device.QueryResponses?.OSVersion || device.OSVersion;
     const name = device.QueryResponses?.DeviceName;
+    const locationLabel = device.location
+      ? `${device.location.schoolNumber || ''} ${device.location.name || ''}`.trim() || '-'
+      : '-';
+    const assetTag = device.assetTag || '-';
 
     return {
       lastCheckin,
       deviceType,
       linkAddress,
       osVersion,
-      name
+      name,
+      locationLabel,
+      assetTag
     };
   }, [device]);
 
@@ -62,6 +68,8 @@ export default function AllDeviceRow({ device }) {
       <td className="py-2">{device.SerialNumber}</td>
       <td className="py-2">{name}</td>
       <td className="py-2">{device.ProductName}</td>
+      <td className="py-2">{locationLabel}</td>
+      <td className="py-2">{assetTag}</td>
       <td className="py-2">{osVersion}</td>
       <td className="py-2">{lastCheckin}</td>
     </tr>

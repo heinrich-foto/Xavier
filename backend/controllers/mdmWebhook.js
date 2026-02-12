@@ -2,6 +2,8 @@ import macOSDevice from '../models/macOSDevice.js';
 import iOSDevice from '../models/iOSDevice.js';
 import iPadOSDevice from '../models/iPadOSDevice.js';
 import tvOSDevice from '../models/tvOSDevice.js';
+import DeviceRegistration from '../models/deviceRegistration.js';
+import profile from '../models/profile.js';
 import plist from 'plist';
 import { logResponse } from '../services/logCommand.js';
 
@@ -12,7 +14,9 @@ import {
     getInstalledApplications_MDM_Command, 
     getiOSDeviceInfo_MDM_Command,
     gettvOSDeviceInfo_MDM_Command,
-    getSecurityInfo_MDM_Command 
+    getSecurityInfo_MDM_Command,
+    renameDevice_MDM_Command,
+    installConfigProfile_MDM_Command
 } from '../services/mdmActions.js';
 
 const deviceResponse = async (req, res) => {
@@ -52,25 +56,55 @@ async function handleAuthenticate(event) {
     } 
 
     if (device) {
+        const registration = await DeviceRegistration.findOne({
+            serialNumber: plistData.SerialNumber,
+            enrollmentStatus: 'pending'
+        }).populate('profileToInstall');
+
+        const updateData = {
+            'mdmProfileInstalled': true,
+            'UDID': udid,
+            'SerialNumber': plistData.SerialNumber,
+            'BuildVersion': plistData.BuildVersion,
+            'IMEI': plistData.IMEI,
+            'OSVersion': plistData.OSVersion,
+            'ProductName': plistData.ProductName,
+            'Topic': plistData.Topic,
+            lastCheckedIn
+        };
+
+        if (registration) {
+            if (registration.location) updateData.location = registration.location;
+            if (registration.assetTag) updateData.assetTag = registration.assetTag;
+        }
+
         await device.updateOne(
             {'UDID': udid},
-            {
-                'mdmProfileInstalled': true,
-                'UDID': udid,
-                'SerialNumber': plistData.SerialNumber,
-                'BuildVersion': plistData.BuildVersion,
-                'IMEI': plistData.IMEI,
-                'OSVersion': plistData.OSVersion,
-                'ProductName': plistData.ProductName,
-                'Topic': plistData.Topic,
-                lastCheckedIn
-            },
-            {
-                upsert: true
-            }
+            updateData,
+            { upsert: true }
         );
+
+        if (registration) {
+            if (registration.plannedDeviceName) {
+                renameDevice_MDM_Command(udid, registration.plannedDeviceName, null);
+            }
+            if (registration.profileToInstall) {
+                const profileDoc = await profile.findById(registration.profileToInstall);
+                if (profileDoc?.MobileConfigData) {
+                    installConfigProfile_MDM_Command(
+                        udid,
+                        profileDoc.MobileConfigData,
+                        profileDoc.PayloadDisplayName,
+                        null
+                    );
+                }
+            }
+            await DeviceRegistration.updateOne(
+                { _id: registration._id },
+                { enrollmentStatus: 'enrolled', enrolledAt: new Date, udid }
+            );
+        }
     }
-    
 }
 
 async function handleTokenUpdate(event) {

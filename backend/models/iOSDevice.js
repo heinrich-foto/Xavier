@@ -10,6 +10,13 @@ const iOSDeviceSchema = new mongoose.Schema({
   mdmProfileInstalled: {
     type: Boolean
   },
+  location: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Location'
+  },
+  assetTag: {
+    type: String
+  },
 
   // these are from Authenticate and are here as a placeholder while troubleshooting iOS QueryResponses
   BuildVersion: {

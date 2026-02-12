@@ -19,6 +19,7 @@ import profile from '../models/profile.js';
 import consoleUser from '../models/consoleUser.js';
 import complianceCardPrefs from '../models/complianceCard.js';
 import command from '../models/commandHistory.js';
+import Location from '../models/location.js';
 
 // Input Types
 const ApplicationFilterInput = new GraphQLInputObjectType({
@@ -44,7 +45,8 @@ const DeviceFilterInput = new GraphQLInputObjectType({
   fields: {
     OSVersion: { type: GraphQLString },
     mdmProfileInstalled: { type: GraphQLBoolean },
-    SystemIntegrityProtectionEnabled: { type: GraphQLBoolean }
+    SystemIntegrityProtectionEnabled: { type: GraphQLBoolean },
+    location: { type: GraphQLID }
   }
 });
 
@@ -188,6 +190,7 @@ const UnlockPinType = new GraphQLObjectType({
 const ConfigProfileType = new GraphQLObjectType({
   name: "configProfile",
   fields: () => ({
+    _id: { type: GraphQLID },
     PayloadDescription: { type: GraphQLString },
     PayloadDisplayName: { type: GraphQLString },
     PayloadIdentifier: { type: GraphQLString },
@@ -215,6 +218,15 @@ const ComplianceCardPrefsType = new GraphQLObjectType({
   fields: () => ({
     consoleUser: { type: GraphQLID },
     complianceCardPrefs: { type: new GraphQLList(ComplianceCardPrefType)}
+  })
+});
+
+const LocationType = new GraphQLObjectType({
+  name: 'location',
+  fields: () => ({
+    _id: { type: GraphQLID },
+    name: { type: GraphQLString },
+    schoolNumber: { type: GraphQLString }
   })
 });
 
@@ -414,6 +426,14 @@ const MacType = new GraphQLObjectType({
     OSVersion: { type: GraphQLString },
     ProductName: { type: GraphQLString },
     Topic: { type: GraphQLString },
+    location: {
+      type: LocationType,
+      resolve(parent) {
+        if (!parent.location) return null;
+        return Location.findById(parent.location);
+      }
+    },
+    assetTag: { type: GraphQLString },
     QueryResponses: { type: MacQueryResponseType },
     SecurityInfo: { type: MacSecurityInfoType },
     Applications: { type: new GraphQLList(ApplicationType) },
@@ -456,6 +476,14 @@ const iPhoneType = new GraphQLObjectType({
     OSVersion: { type: GraphQLString },
     ProductName: { type: GraphQLString },
     Topic: { type: GraphQLString },
+    location: {
+      type: LocationType,
+      resolve(parent) {
+        if (!parent.location) return null;
+        return Location.findById(parent.location);
+      }
+    },
+    assetTag: { type: GraphQLString },
     QueryResponses: { type: iOSQueryResponseType },
     Applications: { type: new GraphQLList(ApplicationType) },
     Profiles: { type: new GraphQLList(ProfileType) },
@@ -495,6 +523,14 @@ const iPadType = new GraphQLObjectType({
     OSVersion: { type: GraphQLString },
     ProductName: { type: GraphQLString },
     Topic: { type: GraphQLString },
+    location: {
+      type: LocationType,
+      resolve(parent) {
+        if (!parent.location) return null;
+        return Location.findById(parent.location);
+      }
+    },
+    assetTag: { type: GraphQLString },
     QueryResponses: { type: iOSQueryResponseType },
     Applications: { type: new GraphQLList(ApplicationType) },
     Profiles: { type: new GraphQLList(ProfileType) },
@@ -533,6 +569,14 @@ const AppleTVType = new GraphQLObjectType({
     OSVersion: { type: GraphQLString },
     ProductName: { type: GraphQLString },
     Topic: { type: GraphQLString },
+    location: {
+      type: LocationType,
+      resolve(parent) {
+        if (!parent.location) return null;
+        return Location.findById(parent.location);
+      }
+    },
+    assetTag: { type: GraphQLString },
     QueryResponses: { type: tvOSQueryResponseType },
     Applications: { type: new GraphQLList(ApplicationType) },
     Profiles: { type: new GraphQLList(ProfileType) },
@@ -842,6 +886,12 @@ const RootQuery = new GraphQLObjectType({
         return consoleUser.find();
       }
     },
+    locations: {
+      type: new GraphQLList(LocationType),
+      resolve(parent, args) {
+        return Location.find({}).sort({ schoolNumber: 1 });
+      }
+    },
     installedMacProfiles: {
       type: new GraphQLList(GraphQLString),
       resolve(parent, args) {
@@ -956,11 +1006,12 @@ const buildFilterQuery = (filter) => {
   if (filter.SystemIntegrityProtectionEnabled !== undefined) {
     query['QueryResponses.SystemIntegrityProtectionEnabled'] = filter.SystemIntegrityProtectionEnabled;
   }
+  if (filter.location) query.location = filter.location;
   return query;
 };
 
 // Create schema with all possible types that implement DeviceInterface
 export default new GraphQLSchema({
   query: RootQuery,
-  types: [MacType, iPhoneType, iPadType, AppleTVType]
+  types: [MacType, iPhoneType, iPadType, AppleTVType, LocationType]
 });
