@@ -42,6 +42,11 @@ const NAV_ITEMS = [
     label: "Locations",
   },
   {
+    to: "/device-groups",
+    icon: "layer-group",
+    label: "Geräte-Gruppen",
+  },
+  {
     to: "/device-registrations",
     icon: "clipboard-list",
     label: "Geräte-Registrierung",

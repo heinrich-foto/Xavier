@@ -41,9 +41,17 @@ const deleteDeviceRegistration = async (id) => {
   return response.data;
 };
 
+const importDeviceRegistrations = async (devices) => {
+  const response = await axios.post(`${API_URL}/import`, { devices }, {
+    headers: { ...getAuthHeader(), 'Content-Type': 'application/json' }
+  });
+  return response.data;
+};
+
 export default {
   getDeviceRegistrations,
   createDeviceRegistration,
   updateDeviceRegistration,
   deleteDeviceRegistration,
+  importDeviceRegistrations,
 };

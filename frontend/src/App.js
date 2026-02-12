@@ -12,6 +12,7 @@ import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import AllDevices from './pages/AllDevices';
 import Locations from './pages/Locations';
+import DeviceGroups from './pages/DeviceGroups';
 import DeviceRegistrations from './pages/DeviceRegistrations';
 import MacDetail from './pages/MacDetail';
 import IPhoneDetail from './pages/IPhoneDetail';
@@ -73,6 +74,7 @@ function App() {
                 <Route path="/profiles" element={<Profiles />} />
                 <Route path="/users" element={<Users />} />
                 <Route path="/locations" element={<Locations />} />
+                <Route path="/device-groups" element={<DeviceGroups />} />
                 <Route path="/device-registrations" element={<DeviceRegistrations />} />
                 <Route path="/mac/:SerialNumber" element={<MacDetail />} />
                 <Route path="/iphone/:SerialNumber" element={<IPhoneDetail />} />
