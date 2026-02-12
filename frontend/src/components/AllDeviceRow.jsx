@@ -17,7 +17,9 @@ export default function AllDeviceRow({ device }) {
     deviceType,
     linkAddress,
     osVersion,
-    name
+    name,
+    locationLabel,
+    assetTag
   } = useMemo(() => {
     const lastCheckin = timeSince(device.updatedAt);
 
