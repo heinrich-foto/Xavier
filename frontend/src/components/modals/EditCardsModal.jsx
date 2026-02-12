@@ -49,6 +49,10 @@ const PLATFORM_DATA_MAP = {
   ipados: {
     title: "iPad",
     osTitle: "iPadOS version"
+  },
+  tvos: {
+    title: "Apple TV",
+    osTitle: "tvOS version"
   }
 };
 
@@ -168,6 +172,18 @@ const PlatformSelector = memo(function PlatformSelector({ onSelect }) {
           Mac
         </label>
       </div>
+      <div className='form-check'>
+        <input
+          className='form-check-input'
+          type='radio'
+          name='radioPlatform'
+          id='flexRadioDefault4'
+          onChange={() => onSelect("tvos")}
+        />
+        <label className='form-check-label' htmlFor='flexRadioDefault4'>
+          Apple TV
+        </label>
+      </div>
     </div>
   );
 });
@@ -279,12 +295,15 @@ function EditCardsModal({
   macData,
   iPhoneData,
   iPadData,
+  appleTVData,
   installedMacApps,
   installediPhoneApps,
   installediPadApps,
+  installedAppleTVApps,
   installedMacProfiles,
   installediPhoneProfiles,
   installediPadProfiles,
+  installedAppleTVProfiles,
   stopEditingCards,
   updateCards
 }) {
@@ -394,6 +413,11 @@ function EditCardsModal({
         data: iPadData, 
         apps: installediPadApps, 
         profiles: installediPadProfiles 
+      },
+      tvos: { 
+        data: appleTVData, 
+        apps: installedAppleTVApps, 
+        profiles: installedAppleTVProfiles 
       }
     }[state.addCardPlatform];
 
@@ -476,12 +500,15 @@ function EditCardsModal({
     macData, 
     iPhoneData, 
     iPadData,
+    appleTVData,
     installedMacApps, 
     installediPhoneApps, 
     installediPadApps,
+    installedAppleTVApps,
     installedMacProfiles, 
     installediPhoneProfiles, 
     installediPadProfiles,
+    installedAppleTVProfiles,
     addCardsExt, 
     clearAddCard
   ]);
@@ -548,12 +575,15 @@ EditCardsModal.propTypes = {
   macData: PropTypes.array,
   iPhoneData: PropTypes.array,
   iPadData: PropTypes.array,
+  appleTVData: PropTypes.array,
   installedMacApps: PropTypes.array,
   installediPhoneApps: PropTypes.array,
   installediPadApps: PropTypes.array,
+  installedAppleTVApps: PropTypes.array,
   installedMacProfiles: PropTypes.array,
   installediPhoneProfiles: PropTypes.array,
   installediPadProfiles: PropTypes.array,
+  installedAppleTVProfiles: PropTypes.array,
   stopEditingCards: PropTypes.func.isRequired,
   updateCards: PropTypes.func.isRequired
 };
@@ -562,12 +592,15 @@ EditCardsModal.defaultProps = {
   macData: [],
   iPhoneData: [],
   iPadData: [],
+  appleTVData: [],
   installedMacApps: [],
   installediPhoneApps: [],
   installediPadApps: [],
+  installedAppleTVApps: [],
   installedMacProfiles: [],
   installediPhoneProfiles: [],
-  installediPadProfiles: []
+  installediPadProfiles: [],
+  installedAppleTVProfiles: []
 };
 
 export default memo(EditCardsModal);

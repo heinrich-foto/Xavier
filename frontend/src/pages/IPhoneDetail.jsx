@@ -73,14 +73,14 @@ export default function IPhoneDetail() {
     },
   ];
 
-  const renderModals = (device) => (
+  const renderModals = (device, configProfiles) => (
     <>
       {showInstallProfileModal && (
         <InstallProfileModal
           visible={showInstallProfileModal}
           UDID={device.UDID}
           currentProfiles={device.Profiles}
-          configProfiles={device.configProfiles}
+          configProfiles={configProfiles}
           hideInstallProfileModal={() => setShowInstallProfileModal(false)}
         />
       )}

@@ -2,7 +2,8 @@ import { Router } from 'express';
 const router = Router();
 import { 
     updateiOSDeviceDetails, 
-    updateMacDeviceDetails, 
+    updateMacDeviceDetails,
+    updatetvOSDeviceDetails,
     restartDevice, 
     enableRemoteDesktop, 
     disableRemoteDesktop,
@@ -19,6 +20,7 @@ import {
 
 router.post('/mac/updateInventory/:udid', updateMacDeviceDetails);
 router.post('/ios/updateInventory/:udid', updateiOSDeviceDetails);
+router.post('/tvos/updateInventory/:udid', updatetvOSDeviceDetails);
 router.post('/restartDevice/:udid', restartDevice);
 router.post('/mac/enableRemoteDesktop/:udid', enableRemoteDesktop);
 router.post('/mac/disableRemoteDesktop/:udid', disableRemoteDesktop);

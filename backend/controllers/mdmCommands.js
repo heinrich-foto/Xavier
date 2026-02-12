@@ -8,7 +8,8 @@ import {
     getInstalledApplications_MDM_Command, 
     getDeviceInfo_MDM_Command, 
     getCertificateList_MDM_Command, 
-    getiOSDeviceInfo_MDM_Command, 
+    getiOSDeviceInfo_MDM_Command,
+    gettvOSDeviceInfo_MDM_Command,
     getProfileList_MDM_Command, 
     getSecurityInfo_MDM_Command, 
     restartDevice_MDM_Command,
@@ -58,6 +59,25 @@ const updateMacDeviceDetails = (req, res) => {
         getDeviceInfo_MDM_Command(udid);
         getInstalledApplications_MDM_Command(udid);
         getSecurityInfo_MDM_Command(udid);
+        getCertificateList_MDM_Command(udid);
+        getProfileList_MDM_Command(udid);
+        return res.sendStatus(200);
+    } else {
+        return res.sendStatus(404);
+    }
+}
+
+// get tvOS device details
+const updatetvOSDeviceDetails = (req, res) => {
+    const requester = req.user._id;
+    if (!isAdministrator(requester)) {
+        res.status(400);
+        throw new Error('This request must be made by an administrator');
+    }
+    const { udid } = req.params;
+    if (udid) {
+        gettvOSDeviceInfo_MDM_Command(udid);
+        getInstalledApplications_MDM_Command(udid);
         getCertificateList_MDM_Command(udid);
         getProfileList_MDM_Command(udid);
         return res.sendStatus(200);
@@ -270,6 +290,8 @@ const renameDevice = (req, res) => {
             getDeviceInfo_MDM_Command(udid);
         } else if (platform === 'iOS' || platform === 'iPadOS') {
             getiOSDeviceInfo_MDM_Command(udid, requester);
+        } else if (platform === 'tvOS') {
+            gettvOSDeviceInfo_MDM_Command(udid);
         }
         return res.sendStatus(200);
     } else {
@@ -279,7 +301,8 @@ const renameDevice = (req, res) => {
 
 export { 
     updateiOSDeviceDetails, 
-    updateMacDeviceDetails, 
+    updateMacDeviceDetails,
+    updatetvOSDeviceDetails,
     restartDevice, 
     enableRemoteDesktop, 
     disableRemoteDesktop,

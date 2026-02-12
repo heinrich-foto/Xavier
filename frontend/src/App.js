@@ -14,6 +14,7 @@ import AllDevices from './pages/AllDevices';
 import MacDetail from './pages/MacDetail';
 import IPhoneDetail from './pages/IPhoneDetail';
 import IPadDetail from './pages/IPadDetail';
+import AppleTVDetail from './pages/AppleTVDetail';
 import FilteredDeviceList from './pages/dashboardListPages/FilteredDeviceList';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -72,6 +73,7 @@ function App() {
                 <Route path="/mac/:SerialNumber" element={<MacDetail />} />
                 <Route path="/iphone/:SerialNumber" element={<IPhoneDetail />} />
                 <Route path="/ipad/:SerialNumber" element={<IPadDetail />} />
+                <Route path="/appletv/:SerialNumber" element={<AppleTVDetail />} />
 
                 <Route path="/filter/:filterType/:value" element={<FilteredDeviceList />} />
                 <Route path="/filter/profile/:profile/:value/:deviceType" element={<FilteredDeviceList />} />

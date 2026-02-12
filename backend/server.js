@@ -12,6 +12,7 @@ import protect from './middleware/authHandler.js';
 import macOSDevice from './models/macOSDevice.js';
 import iOSDevice from './models/iOSDevice.js';
 import iPadOSDevice from './models/iPadOSDevice.js';
+import tvOSDevice from './models/tvOSDevice.js';
 
 // Create DataLoader factory functions
 const createLoaders = () => ({
@@ -41,7 +42,8 @@ const createLoaders = () => ({
     const devices = await Promise.all([
       macOSDevice.find({ SerialNumber: { $in: serialNumbers } }),
       iOSDevice.find({ SerialNumber: { $in: serialNumbers } }),
-      iPadOSDevice.find({ SerialNumber: { $in: serialNumbers } })
+      iPadOSDevice.find({ SerialNumber: { $in: serialNumbers } }),
+      tvOSDevice.find({ SerialNumber: { $in: serialNumbers } })
     ]);
     
     const allDevices = devices.flat();

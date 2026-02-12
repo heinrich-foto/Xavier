@@ -14,6 +14,7 @@ import DataLoader from 'dataloader';
 import macOSDevice from '../models/macOSDevice.js';
 import iOSDevice from '../models/iOSDevice.js';
 import iPadOSDevice from '../models/iPadOSDevice.js';
+import tvOSDevice from '../models/tvOSDevice.js';
 import profile from '../models/profile.js';
 import consoleUser from '../models/consoleUser.js';
 import complianceCardPrefs from '../models/complianceCard.js';
@@ -338,6 +339,28 @@ const iOSQueryResponseType = new GraphQLObjectType({
   })
 });
 
+const tvOSQueryResponseType = new GraphQLObjectType({
+  name: 'tvOSQueryResponse',
+  fields: () => ({
+    AvailableDeviceCapacity: { type: GraphQLFloat },
+    BluetoothMAC: { type: GraphQLString },
+    BuildVersion: { type: GraphQLString },
+    DeviceCapacity: { type: GraphQLInt },
+    DeviceName: { type: GraphQLString },
+    IsSupervised: { type: GraphQLBoolean },
+    Model: { type: GraphQLString },
+    ModelName: { type: GraphQLString },
+    ModelNumber: { type: GraphQLString },
+    OSVersion: { type: GraphQLString },
+    ProductName: { type: GraphQLString },
+    SerialNumber: { type: GraphQLString },
+    SoftwareUpdateDeviceID: { type: GraphQLString },
+    TimeZone: { type: GraphQLString },
+    UDID: { type: GraphQLString },
+    WiFiMAC: { type: GraphQLString },
+  })
+});
+
 // Device Interface
 const DeviceInterface = new GraphQLInterfaceType({
   name: 'Device',
@@ -370,6 +393,9 @@ const DeviceInterface = new GraphQLInterfaceType({
     }
     if (device.ProductName.includes('iPad')) {
       return iPadType;
+    }
+    if (device.ProductName.includes('AppleTV')) {
+      return AppleTVType;
     }
     return null;
   }
@@ -496,6 +522,44 @@ const iPadType = new GraphQLObjectType({
   })
 });
 
+const AppleTVType = new GraphQLObjectType({
+  name: 'appletvdevice',
+  interfaces: [DeviceInterface],
+  fields: () => ({
+    SerialNumber: { type: GraphQLString },
+    UDID: { type: GraphQLString },
+    mdmProfileInstalled: { type: GraphQLBoolean },
+    BuildVersion: { type: GraphQLString },
+    OSVersion: { type: GraphQLString },
+    ProductName: { type: GraphQLString },
+    Topic: { type: GraphQLString },
+    QueryResponses: { type: tvOSQueryResponseType },
+    Applications: { type: new GraphQLList(ApplicationType) },
+    Profiles: { type: new GraphQLList(ProfileType) },
+    CertificateList: { type: new GraphQLList(CertificateType) },
+    createdAt: { type: GraphQLString },
+    updatedAt: { type: GraphQLString },
+    filteredApplications: {
+      type: new GraphQLList(ApplicationType),
+      args: {
+        filters: { type: new GraphQLList(ApplicationFilterInput) }
+      },
+      resolve(parent, { filters }) {
+        if (!filters || filters.length === 0) return [];
+        return parent.Applications.filter(app => 
+          filters.some(filter => {
+            const nameMatch = filter.Name === app.Name;
+            if (filter.Version) {
+              return nameMatch && filter.Version === app.Version;
+            }
+            return nameMatch;
+          })
+        );
+      }
+    }
+  })
+});
+
 // Connection Types for Pagination
 const PageInfoType = new GraphQLObjectType({
   name: 'PageInfo',
@@ -527,6 +591,7 @@ const createConnectionType = (nodeType, name) => {
 const MacConnection = createConnectionType(MacType, 'Mac');
 const iPhoneConnection = createConnectionType(iPhoneType, 'iPhone');
 const iPadConnection = createConnectionType(iPadType, 'iPad');
+const AppleTVConnection = createConnectionType(AppleTVType, 'AppleTV');
 
 // Helper functions for pagination
 const encodeCursor = (value) => Buffer.from(value.toString()).toString('base64');
@@ -602,6 +667,18 @@ const RootQuery = new GraphQLObjectType({
         return paginateResults(iPadOSDevice, args, baseQuery);
       }
     },
+    appletvs: {
+      type: AppleTVConnection,
+      args: {
+        first: { type: GraphQLInt },
+        after: { type: GraphQLString },
+        filter: { type: DeviceFilterInput }
+      },
+      resolve(parent, args) {
+        const baseQuery = args.filter ? buildFilterQuery(args.filter) : {};
+        return paginateResults(tvOSDevice, args, baseQuery);
+      }
+    },
     mac: {
       type: MacType,
       args: { SerialNumber: { type: GraphQLString }},
@@ -618,6 +695,13 @@ const RootQuery = new GraphQLObjectType({
     },
     ipad: {
       type: iPadType,
+      args: { SerialNumber: { type: GraphQLString }},
+      resolve(parent, args, context) {
+        return context.deviceLoader.load(args.SerialNumber);
+      }
+    },
+    appletv: {
+      type: AppleTVType,
       args: { SerialNumber: { type: GraphQLString }},
       resolve(parent, args, context) {
         return context.deviceLoader.load(args.SerialNumber);
@@ -729,6 +813,16 @@ const RootQuery = new GraphQLObjectType({
         return iOSDevice.find({"Applications": { $elemMatch: { "Name": args.Name, "Version": args.Version } }});
       }
     },
+    appleTVsWithAppVersion: {
+      type: new GraphQLList(AppleTVType),
+      args: { 
+        Name: { type: GraphQLString },
+        Version: { type: GraphQLString }
+      },
+      resolve(parent, args) {
+        return tvOSDevice.find({"Applications": { $elemMatch: { "Name": args.Name, "Version": args.Version } }});
+      }
+    },
     compliancecardprefs: {
       type: ComplianceCardPrefsType,
       args: { consoleUser: { type: GraphQLID }},
@@ -766,6 +860,12 @@ const RootQuery = new GraphQLObjectType({
         return iPadOSDevice.distinct('Profiles.PayloadDisplayName');
       }
     },
+    installedAppleTVProfiles: {
+      type: new GraphQLList(GraphQLString),
+      resolve(parent, args) {
+        return tvOSDevice.distinct('Profiles.PayloadDisplayName');
+      }
+    },
     installedMacApplications: {
       type: new GraphQLList(GraphQLString),
       resolve(parent, args) {
@@ -782,6 +882,12 @@ const RootQuery = new GraphQLObjectType({
       type: new GraphQLList(GraphQLString),
       resolve(parent, args) {
         return iPadOSDevice.distinct('Applications.Name');
+      }
+    },
+    installedAppleTVApplications: {
+      type: new GraphQLList(GraphQLString),
+      resolve(parent, args) {
+        return tvOSDevice.distinct('Applications.Name');
       }
     },
     commandlogs: {
@@ -819,6 +925,9 @@ const RootQuery = new GraphQLObjectType({
           case 'ipad':
             device = await iPadOSDevice.findOne({ SerialNumber: deviceId });
             break;
+          case 'appletv':
+            device = await tvOSDevice.findOne({ SerialNumber: deviceId });
+            break;
         }
         
         if (!device || !device.Applications) return [];
@@ -853,5 +962,5 @@ const buildFilterQuery = (filter) => {
 // Create schema with all possible types that implement DeviceInterface
 export default new GraphQLSchema({
   query: RootQuery,
-  types: [MacType, iPhoneType, iPadType]
+  types: [MacType, iPhoneType, iPadType, AppleTVType]
 });

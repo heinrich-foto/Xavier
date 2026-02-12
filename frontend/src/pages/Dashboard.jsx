@@ -17,7 +17,8 @@ import {
 const PLATFORM_DATA_MAP = {
     macos: 'macs',
     ios: 'iphones',
-    ipados: 'ipads'
+    ipados: 'ipads',
+    tvos: 'appletvs'
 };
 
 const CARD_TYPE_GENERATORS = {
@@ -80,7 +81,8 @@ const useDashboardData = (consoleUser) => {
             ...data,
             macs: data.macs?.edges?.map(edge => edge.node) || [],
             iphones: data.iphones?.edges?.map(edge => edge.node) || [],
-            ipads: data.ipads?.edges?.map(edge => edge.node) || []
+            ipads: data.ipads?.edges?.map(edge => edge.node) || [],
+            appletvs: data.appletvs?.edges?.map(edge => edge.node) || []
         };
     }, [data]);
   
@@ -120,7 +122,8 @@ const useDashboardData = (consoleUser) => {
         hasNextPage: {
             macs: data?.macs?.pageInfo?.hasNextPage,
             iphones: data?.iphones?.pageInfo?.hasNextPage,
-            ipads: data?.ipads?.pageInfo?.hasNextPage
+            ipads: data?.ipads?.pageInfo?.hasNextPage,
+            appletvs: data?.appletvs?.pageInfo?.hasNextPage
         }
     };
 };
@@ -193,18 +196,22 @@ const Dashboard = () => {
         macData: data.macs,
         iPhoneData: data.iphones,
         iPadData: data.ipads,
+        appleTVData: data.appletvs,
         installedMacApps: data.installedMacApplications,
         installediPhoneApps: data.installediPhoneApplications,
         installediPadApps: data.installediPadApplications,
+        installedAppleTVApps: data.installedAppleTVApplications,
         installedMacProfiles: data.installedMacProfiles,
         installediPhoneProfiles: data.installediPhoneProfiles,
         installediPadProfiles: data.installediPadProfiles,
+        installedAppleTVProfiles: data.installedAppleTVProfiles,
         stopEditingCards: handleModalClose,
         updateCards: handleCardsUpdate,
         totalCounts: {
             macs: data.macs.totalCount,
             iphones: data.iphones.totalCount,
-            ipads: data.ipads.totalCount
+            ipads: data.ipads.totalCount,
+            appletvs: data.appletvs.totalCount
         },
         hasNextPage: hasNextPage,
         onLoadMore: loadMore

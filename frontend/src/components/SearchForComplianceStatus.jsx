@@ -3,6 +3,7 @@ import { Button } from "react-bootstrap";
 import { MacComplianceStatusBooleans } from "../constants/MacComplianceStatusBooleans";
 import { iPadComplianceStatusBooleans } from "../constants/iPadComplianceStatusBooleans";
 import { iPhoneComplianceStatusBooleans } from "../constants/iPhoneComplianceStatusBooleans";
+import { appleTVComplianceStatusBooleans } from "../constants/appleTVComplianceStatusBooleans";
 
 function SearchForComplianceStatus({
   platform,
@@ -43,6 +44,11 @@ function SearchForComplianceStatus({
       break;
     case "ipados":
       platformBooleans = iPadComplianceStatusBooleans.filter(
+        (card) => !currentCardBooleans.includes(card.title)
+      );
+      break;
+    case "tvos":
+      platformBooleans = appleTVComplianceStatusBooleans.filter(
         (card) => !currentCardBooleans.includes(card.title)
       );
       break;

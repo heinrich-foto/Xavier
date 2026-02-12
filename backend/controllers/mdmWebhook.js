@@ -1,6 +1,7 @@
 import macOSDevice from '../models/macOSDevice.js';
 import iOSDevice from '../models/iOSDevice.js';
 import iPadOSDevice from '../models/iPadOSDevice.js';
+import tvOSDevice from '../models/tvOSDevice.js';
 import plist from 'plist';
 import { logResponse } from '../services/logCommand.js';
 
@@ -9,7 +10,8 @@ import {
     getDeviceInfo_MDM_Command, 
     getProfileList_MDM_Command, 
     getInstalledApplications_MDM_Command, 
-    getiOSDeviceInfo_MDM_Command, 
+    getiOSDeviceInfo_MDM_Command,
+    gettvOSDeviceInfo_MDM_Command,
     getSecurityInfo_MDM_Command 
 } from '../services/mdmActions.js';
 
@@ -45,6 +47,8 @@ async function handleAuthenticate(event) {
         device = iOSDevice;
     } else if (plistData.ProductName.includes('iPad')) {
         device = iPadOSDevice;
+    } else if (plistData.ProductName.includes('AppleTV')) {
+        device = tvOSDevice;
     } 
 
     if (device) {
@@ -89,7 +93,7 @@ async function handleTokenUpdate(event) {
                 upsert: false
             }
         );
-    } else if (device && device === macOSDevice) {
+    } else if (device && (device === macOSDevice || device === tvOSDevice)) {
         await device.updateOne(
             {'UDID': udid},
             {
@@ -108,6 +112,8 @@ async function handleTokenUpdate(event) {
 
     if (storedDevice.ProductName.includes('iPhone') || storedDevice.ProductName.includes('iPad')) {
         getiOSDeviceInfo_MDM_Command(udid);
+    } else if (storedDevice.ProductName.includes('AppleTV')) {
+        gettvOSDeviceInfo_MDM_Command(udid);
     } else {
         getDeviceInfo_MDM_Command(udid);
     }
@@ -125,9 +131,30 @@ async function handleConnect(event) {
         console.log('PLIST PAYLOAD:');
         console.log(plistData);
         const lastCheckedIn = Date.now();
-        
-        const device = await getDeviceType(udid);
+        let device = null;
+        device = await getDeviceType(udid);
+        // wenn device nicht existiert muss es erstellt in der Datenbank noch erstellt werden.
+        if (!device) {
+            device = null; // wenn device nicht existiert muss es erstellt in der Datenbank noch erstellt werden.
+            if (!plistData.QueryResponses.ProductName) {
+                console.log('No ProductName found in plistData');
+                console.log(plistData);
+                console.log('query DeviceInfo Command');
+                getDeviceInfo_MDM_Command(udid);
+                return;
+            }
 
+            if (plistData.QueryResponses.ProductName.includes('Mac')) {
+                device = macOSDevice;
+            } else if (plistData.QueryResponses.ProductName.includes('iPhone')) {
+                device = iOSDevice;
+            } else if (plistData.QueryResponses.ProductName.includes('iPad')) {
+                device = iPadOSDevice;
+            } else if (plistData.QueryResponses.ProductName.includes('AppleTV')) {
+                device = tvOSDevice;
+            } 
+        }
+        
         if (plistData.QueryResponses) {
             const QueryResponses = plistData.QueryResponses;
             await device.updateOne(
@@ -256,6 +283,8 @@ async function getDeviceType(udid) {
         return iOSDevice;
     } else if (await iPadOSDevice.findOne({'UDID': udid})) {
         return iPadOSDevice;
+    } else if (await tvOSDevice.findOne({'UDID': udid})) {
+        return tvOSDevice;
     } else {
         return null;
     }

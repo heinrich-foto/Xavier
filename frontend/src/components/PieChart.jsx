@@ -15,11 +15,13 @@ const ROUTE_MAPPING = {
     macos: (title, value) => `/filter/profile/${title}/${value}/macos`,
     ios: (title, value) => `/filter/profile/${title}/${value}/ios`,
     ipados: (title, value) => `/filter/profile/${title}/${value}/ipados`,
+    tvos: (title, value) => `/filter/profile/${title}/${value}/tvos`,
   },
   version: {
     'macOS version': (value) => `/filter/osversion/mac/${encodeURIComponent(value)}`,
     'iPadOS version': (value) => `/filter/osversion/iPad/${encodeURIComponent(value)}`,
     'iOS version': (value) => `/filter/osversion/iPhone/${encodeURIComponent(value)}`,
+    'tvOS version': (value) => `/filter/osversion/AppleTV/${encodeURIComponent(value)}`,
     default: (platformType, title, value) => 
       `/filter/appversion/${platformType}/${encodeURIComponent(title)}/${encodeURIComponent(value)}`,
   },

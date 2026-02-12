@@ -1,27 +1,20 @@
 import React, { useState } from "react";
-import { GET_IPAD } from "../queries/iPadQueries";
+import { GET_APPLE_TV } from "../queries/appleTVQueries";
 import DeviceDetailBase, { calculateStoragePercentage, formatMacAddress } from "../components/DeviceDetailBase";
 import {
   updateDeviceInventory,
   restartDevice,
-  clearPasscode,
 } from "../commands/mdmCommands.js";
 import RenameDeviceModal from "../components/modals/RenameDeviceModal.jsx";
 import InstallProfileModal from "../components/modals/InstallProfileModal.jsx";
 import EraseDeviceModal from "../components/modals/EraseDeviceModal.jsx";
-import LockDeviceModal from "../components/modals/LockDeviceModal.jsx";
 
-export default function IPadDetail() {
+export default function AppleTVDetail() {
   const [showRenameDeviceModal, setShowRenameDeviceModal] = useState(false);
   const [showInstallProfileModal, setShowInstallProfileModal] = useState(false);
   const [showEraseDeviceModal, setShowEraseDeviceModal] = useState(false);
-  const [showLockDeviceModal, setShowLockDeviceModal] = useState(false);
 
   const actionButtons = [
-    {
-      label: "Clear Passcode",
-      onClick: (device) => clearPasscode(device.UDID, "iPadOS")
-    },
     {
       label: "Erase Device",
       onClick: () => setShowEraseDeviceModal(true)
@@ -29,10 +22,6 @@ export default function IPadDetail() {
     {
       label: "Install Profile",
       onClick: () => setShowInstallProfileModal(true)
-    },
-    {
-      label: "Lock Device",
-      onClick: () => setShowLockDeviceModal(true)
     },
     {
       label: "Rename Device",
@@ -44,7 +33,7 @@ export default function IPadDetail() {
     },
     {
       label: "Update Device Inventory",
-      onClick: (device) => updateDeviceInventory("ios", device.UDID)
+      onClick: (device) => updateDeviceInventory("tvos", device.UDID)
     }
   ];
 
@@ -67,7 +56,7 @@ export default function IPadDetail() {
     {
       title: 'operating system',
       getData: (device) => ({
-        "iPadOS version": device.QueryResponses?.OSVersion,
+        "tvOS version": device.QueryResponses?.OSVersion,
         "build version": device.QueryResponses?.BuildVersion,
         "MDM profile installed": device.mdmProfileInstalled,
         "supervised": device.QueryResponses?.IsSupervised
@@ -75,13 +64,13 @@ export default function IPadDetail() {
     }
   ];
 
-  const renderModals = (device, configProfiles) => (
+  const renderModals = (device) => (
     <>
       {showRenameDeviceModal && (
         <RenameDeviceModal
           visible={showRenameDeviceModal}
           UDID={device.UDID}
-          platform='iPadOS'
+          platform='tvOS'
           oldName={device.QueryResponses?.DeviceName}
           hideRenameDeviceModal={() => setShowRenameDeviceModal(false)}
         />
@@ -91,7 +80,7 @@ export default function IPadDetail() {
           visible={showInstallProfileModal}
           UDID={device.UDID}
           currentProfiles={device.Profiles}
-          configProfiles={configProfiles}
+          configProfiles={device.configProfiles}
           hideInstallProfileModal={() => setShowInstallProfileModal(false)}
         />
       )}
@@ -102,21 +91,14 @@ export default function IPadDetail() {
           hideEraseDeviceModal={() => setShowEraseDeviceModal(false)}
         />
       )}
-      {showLockDeviceModal && (
-        <LockDeviceModal
-          visible={showLockDeviceModal}
-          UDID={device.UDID}
-          hideLockDeviceModal={() => setShowLockDeviceModal(false)}
-        />
-      )}
     </>
   );
 
   return (
     <DeviceDetailBase
-      query={GET_IPAD}
-      deviceType="ipad"
-      getDeviceData={(data) => data.ipad}
+      query={GET_APPLE_TV}
+      deviceType="appletv"
+      getDeviceData={(data) => data.appletv}
       actionButtons={actionButtons}
       renderModals={renderModals}
       infoSections={infoSections}
