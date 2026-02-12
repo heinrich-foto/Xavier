@@ -16,6 +16,12 @@ const GET_APPLE_TV = gql`
             OSVersion
             UDID
             mdmProfileInstalled
+            assetTag
+            location {
+                _id
+                name
+                schoolNumber
+            }
             QueryResponses {
                 AvailableDeviceCapacity
                 BluetoothMAC

@@ -16,6 +16,12 @@ const GET_IPHONE = gql`
             OSVersion
             UDID
             mdmProfileInstalled
+            assetTag
+            location {
+                _id
+                name
+                schoolNumber
+            }
             QueryResponses {
                 AppAnalyticsEnabled
                 AvailableDeviceCapacity

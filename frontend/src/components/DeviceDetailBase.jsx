@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { FaBolt } from "react-icons/fa";
@@ -6,6 +6,7 @@ import Spinner from "./Spinner";
 import NotFound from "../pages/NotFound";
 import AuditSymbolCompliance from "./AuditSymbolCompliance";
 import DetailTabs from "../components/DetailTabs";
+import EditLocationModal from "./modals/EditLocationModal";
 import isAdministrator from "../utilities/checkPrivileges";
 import timeSince from "../utilities/timeSince.js";
 
@@ -94,8 +95,9 @@ export const DeviceDetailBase = ({
   infoSections 
 }) => {
   const { SerialNumber } = useParams();
+  const [showEditLocationModal, setShowEditLocationModal] = useState(false);
   
-  const { loading, error, data } = useQuery(query, {
+  const { loading, error, data, refetch } = useQuery(query, {
     variables: { SerialNumber },
   });
 
@@ -104,6 +106,33 @@ export const DeviceDetailBase = ({
 
   const device = getDeviceData(data);
   const lastCheckin = timeSince(device.updatedAt);
+
+  const locationLabel = device.location
+    ? `${device.location.schoolNumber || ''} – ${device.location.name || ''}`.trim()
+    : '—';
+  const assetTagLabel = device.assetTag || '—';
+
+  const organizationSection = {
+    title: 'organization',
+    getData: (d) => ({
+      'location': isAdministrator() ? (
+        <span>
+          {locationLabel}
+          {' '}
+          <button
+            type="button"
+            className="btn btn-link btn-sm p-0 align-baseline"
+            onClick={() => setShowEditLocationModal(true)}
+          >
+            bearbeiten
+          </button>
+        </span>
+      ) : locationLabel,
+      'asset tag': assetTagLabel,
+    }),
+  };
+
+  const allSections = [organizationSection, ...infoSections];
 
   return (
     <>
@@ -118,7 +147,7 @@ export const DeviceDetailBase = ({
           />
 
           <div className='row gx-5'>
-            {infoSections.map((section, index) => (
+            {allSections.map((section, index) => (
               <DeviceInfoSection
                 key={index}
                 title={section.title}
@@ -130,6 +159,15 @@ export const DeviceDetailBase = ({
           <hr />
           <DetailTabs device={device} />
           {renderModals && renderModals(device, data.configProfiles)}
+          {isAdministrator() && (
+            <EditLocationModal
+              visible={showEditLocationModal}
+              device={device}
+              deviceType={deviceType}
+              onClose={() => setShowEditLocationModal(false)}
+              onSuccess={() => refetch()}
+            />
+          )}
         </main>
       )}
     </>

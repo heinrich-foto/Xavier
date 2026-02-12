@@ -73,11 +73,13 @@ import complianceCardPrefsRouter from './routes/complianceCardPrefsRoutes.js';
 import locationRouter from './routes/locationRoutes.js';
 import deviceRegistrationRouter from './routes/deviceRegistrationRoutes.js';
 import deviceGroupRouter from './routes/deviceGroupRoutes.js';
+import depWebhookRouter from './routes/depWebhookRoutes.js';
 import deviceRouter from './routes/deviceRoutes.js';
 
 // open routes
 app.use('/mdm/webhook', mdmWebhookRouter);
 app.use('/api/users', userRouter);
+app.use('/api/dep-sync', depWebhookRouter);
 
 // protected routes
 app.use('/mdm/commands', protect, mdmCommandRouter);

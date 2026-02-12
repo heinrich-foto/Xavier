@@ -35,7 +35,12 @@ const deviceRegistrationSchema = new mongoose.Schema({
   },
   notes: {
     type: String
-  }
+  },
+  depProfileUuid: { type: String },
+  depProfileStatus: { type: String },
+  depDeviceAssignedBy: { type: String },
+  depOpType: { type: String },
+  depLastSync: { type: Date }
 }, {
   timestamps: true
 });

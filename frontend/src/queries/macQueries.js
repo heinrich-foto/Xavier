@@ -16,6 +16,12 @@ const GET_MAC = gql`
             OSVersion
             UDID
             mdmProfileInstalled
+            assetTag
+            location {
+                _id
+                name
+                schoolNumber
+            }
             unlockPins {
                 pin
             }
