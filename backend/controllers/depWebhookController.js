@@ -3,47 +3,34 @@ import DeviceRegistration from '../models/deviceRegistration.js';
 
 /**
  * DEP Sync Webhook – empfängt Geräte vom nanodep Syncer.
- * Payload-Format (von godep.FetchDeviceResponseJson / SyncDevices):
- * {
- *   "devices": [{
- *     "serial_number": "C02XY1234",
- *     "device_assigned_by": "...",
- *     "op_type": "added"|"modified"|"deleted",
- *     "profile_uuid": "DEP-Enrollment-Profile-UUID",
- *     "profile_status": "assigned"|"pushed"|...
- *   }],
- *   "cursor": "...",
- *   "more_to_follow": false
- * }
- * Hinweis: profile_uuid/profile_status beziehen sich auf das DEP-Enrollment-Profil,
- * nicht auf mobileconfig-Profile.
+ * Payload: { topic, event_id, created_at, device_response_event: { dep_name, device_response } }
+ * device_response kann enthalten:
+ *   - devices: [{ serial_number, op_type, profile_uuid, ... }] (optional, fehlt bei leerem Sync)
+ *   - cursor, fetched_until, more_to_follow
+ * Leere Batches (ohne devices-Array) werden mit 200 und { created:0, updated:0, deleted:0 } beantwortet.
  */
 const handleDepSync = asyncHandler(async (req, res) => {
   // The DEP syncer posts: { topic, event_id, created_at, device_response_event: { dep_name, device_response } }
-  // The actual devices array is inside device_response_event.device_response.devices
+  // device_response may contain: devices, cursor, fetched_until, more_to_follow
+  // When empty or sync-complete-only, device_response has no devices array – treat as empty batch
+  const deviceResponse = req.body.device_response_event?.device_response;
   const devices =
-    (req.body.device_response_event &&
-      req.body.device_response_event.device_response &&
-      (req.body.device_response_event.device_response.devices ||
-        req.body.device_response_event.device_response.Devices)) ||
+    deviceResponse?.devices ||
+    deviceResponse?.Devices ||
     req.body.devices ||
     req.body.Devices;
-  
-  console.log('DEP SYNC DEVICES:');
-  console.log(devices);
-  console.log(req.body)
-  console.log('DEP SYNC END:');
-  
-  if (!Array.isArray(devices)) {
-    res.status(400).json({ error: 'Request body must contain a "devices" (or "Devices") array' });
-    return;
+
+  const deviceList = Array.isArray(devices) ? devices : [];
+
+  if (deviceList.length > 0) {
+    console.log('DEP SYNC DEVICES:', deviceList.length, 'device(s)');
   }
 
   const results = { created: 0, updated: 0, deleted: 0, errors: [] };
   const now = new Date();
 
-  for (let i = 0; i < devices.length; i++) {
-    const d = devices[i];
+  for (let i = 0; i < deviceList.length; i++) {
+    const d = deviceList[i];
     const serial = d.serial_number || d.SerialNumber;
 
     if (!serial) {
