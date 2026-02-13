@@ -19,8 +19,21 @@ import DeviceRegistration from '../models/deviceRegistration.js';
  * nicht auf mobileconfig-Profile.
  */
 const handleDepSync = asyncHandler(async (req, res) => {
-  const devices = req.body.devices || req.body.Devices;
-
+  // The DEP syncer posts: { topic, event_id, created_at, device_response_event: { dep_name, device_response } }
+  // The actual devices array is inside device_response_event.device_response.devices
+  const devices =
+    (req.body.device_response_event &&
+      req.body.device_response_event.device_response &&
+      (req.body.device_response_event.device_response.devices ||
+        req.body.device_response_event.device_response.Devices)) ||
+    req.body.devices ||
+    req.body.Devices;
+  
+  console.log('DEP SYNC DEVICES:');
+  console.log(devices);
+  console.log(req.body)
+  console.log('DEP SYNC END:');
+  
   if (!Array.isArray(devices)) {
     res.status(400).json({ error: 'Request body must contain a "devices" (or "Devices") array' });
     return;
